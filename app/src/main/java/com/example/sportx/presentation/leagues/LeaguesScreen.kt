@@ -25,20 +25,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.sportx.R
 import com.example.sportx.domain.model.leagues.SportsResponseModel
+import com.example.sportx.presentation.routes.FixtureScreen
 import com.example.sportx.utilities.UiStateResult
 
 
 @Composable
 
-fun LeaguesScreen(leaguesViewModel: LeaguesViewModel , sportType : String) {
-    SportsLeaguesList(leaguesViewModel , sportType)
+fun LeaguesScreen(leaguesViewModel: LeaguesViewModel , sportType : String , navController : NavController) {
+    SportsLeaguesList(leaguesViewModel , sportType , navController)
 }
 
 @Composable
-fun SportsLeaguesList(leaguesViewModel: LeaguesViewModel, sportType: String) {
+fun SportsLeaguesList(
+    leaguesViewModel: LeaguesViewModel,
+    sportType: String,
+    navController: NavController
+) {
     leaguesViewModel.getSportLeagues(sportType)
     val leagues = leaguesViewModel.leagues.collectAsStateWithLifecycle().value
 
@@ -52,7 +58,7 @@ fun SportsLeaguesList(leaguesViewModel: LeaguesViewModel, sportType: String) {
         is UiStateResult.Success -> {
             LazyColumn {
                 itemsIndexed(leagues.response){ _ , league ->
-                    LeagueCard(league)
+                    LeagueCard(league , sportType , navController)
                 }
             }
         }
@@ -60,7 +66,7 @@ fun SportsLeaguesList(leaguesViewModel: LeaguesViewModel, sportType: String) {
 
 }
 @Composable
-fun LeagueCard(league: SportsResponseModel) {
+fun LeagueCard(league: SportsResponseModel, sportType: String, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -68,11 +74,14 @@ fun LeagueCard(league: SportsResponseModel) {
             .padding(vertical = 10.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        onClick = {
+            navController.navigate(FixtureScreen(sportType = sportType))
+        }
     ){
         Row {
             AsyncImage(
-                model = league.league_logo ,
+                model = league.leagueLogo ,
                 contentDescription = "logo" ,
                 modifier = Modifier
                     .size(100.dp)
@@ -82,7 +91,7 @@ fun LeagueCard(league: SportsResponseModel) {
                 error = painterResource(id = R.drawable.broken_image)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = league.league_name , fontWeight = FontWeight.Bold , fontSize = 25.sp
+            Text(text = league.leagueName , fontWeight = FontWeight.Bold , fontSize = 25.sp
                 , modifier = Modifier.padding(15.dp)
                     .fillMaxSize()
             , textAlign = TextAlign.Center)

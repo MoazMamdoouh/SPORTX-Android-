@@ -2,10 +2,9 @@ package com.example.sportx.presentation.leagues
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.sportx.domain.model.leagues.SportsResponseModel
-import com.example.sportx.domain.use_case.SportXUseCase
+import com.example.sportx.domain.useCase.SportXUseCase
 import com.example.sportx.utilities.UiStateResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +31,8 @@ class LeaguesViewModel(
     }
 }
 
-class LeaguesFactory(val sportXUseCase : SportXUseCase) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return LeaguesViewModel(sportXUseCase) as T
-    }
-}
+//class LeaguesFactory(val sportXUseCase : SportXUseCase) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        return LeaguesViewModel(sportXUseCase) as T
+//    }
+//}

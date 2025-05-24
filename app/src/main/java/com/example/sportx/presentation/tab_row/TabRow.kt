@@ -23,7 +23,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,12 +30,15 @@ import androidx.navigation.toRoute
 import com.example.sportx.data.remote.RetrofitService
 import com.example.sportx.data.remote.SportXRemoteDataSource
 import com.example.sportx.data.repository.SPORTXRepoImpl
-import com.example.sportx.domain.use_case.SportXUseCaseImpl
+import com.example.sportx.domain.useCase.SportXUseCaseImpl
+import com.example.sportx.presentation.factory.LeaguesFactory
 import com.example.sportx.presentation.factory.SportXFactory
+import com.example.sportx.presentation.fixtures.FixtureScreen
+import com.example.sportx.presentation.fixtures.FixtureViewModel
 import com.example.sportx.presentation.home.HomeScreen
-import com.example.sportx.presentation.leagues.LeaguesFactory
 import com.example.sportx.presentation.leagues.LeaguesScreen
 import com.example.sportx.presentation.leagues.LeaguesViewModel
+import com.example.sportx.presentation.routes.FixtureScreen
 import com.example.sportx.presentation.routes.HomeScreen
 import com.example.sportx.presentation.routes.LeaguesScreen
 
@@ -56,21 +58,14 @@ val tabRowItems = listOf(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TabRowFunction() {
-//    val leaguesFactory = LeaguesFactory(
-//        SportXUseCaseImpl(
-//            SPORTXRepoImpl.getInstance(
-//                SportXRemoteDataSource.getInstance(RetrofitService.api)
-//            )
-//        )
-//    )
-//    val leaguesViewModel: LeaguesViewModel = viewModel(factory = leaguesFactory)
-    val sportXFactory  = SportXFactory()
-    val leaguesViewModel = sportXFactory.viewModelCreationFactory("leagues" ,
-        SportXUseCaseImpl(
-            SPORTXRepoImpl.getInstance(
-                SportXRemoteDataSource.getInstance(RetrofitService.api)
-            )
-        )) as LeaguesViewModel
+
+    val useCase = SportXUseCaseImpl(SPORTXRepoImpl.getInstance(SportXRemoteDataSource.getInstance(RetrofitService.api)))
+
+    val leaguesFactory  = LeaguesFactory()
+    val leaguesViewModel = leaguesFactory.createViewModel(useCase) as LeaguesViewModel
+
+    val fixtureFactory : SportXFactory = LeaguesFactory()
+    val fixtureViewModel = leaguesFactory.createViewModel(useCase) as FixtureViewModel
 
     val navController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -108,21 +103,26 @@ fun TabRowFunction() {
             }
             HorizontalPager(
                 state = tabPages,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f)
             ) { index ->
                 Column {
-                    if(index == 0 ) {
+                    if (index == 0) {
                         NavHost(navController, startDestination = HomeScreen) {
                             composable<HomeScreen> {
                                 HomeScreen(navController)
                             }
                             composable<LeaguesScreen> {
                                 val args = it.toRoute<LeaguesScreen>()
-                                LeaguesScreen(leaguesViewModel, args.sportType)
+                                LeaguesScreen(leaguesViewModel, args.sportType , navController)
+                            }
+                            composable<FixtureScreen>{
+                                val fixtureArgs = it.toRoute<FixtureScreen>()
+                                FixtureScreen(fixtureViewModel , fixtureArgs.sportType)
                             }
                         }
-                    }else {
+                    } else {
                         Text(text = tabRowItems[index].title)
                     }
                 }
