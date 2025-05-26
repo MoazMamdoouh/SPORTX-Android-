@@ -28,11 +28,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.sportx.data.remote.RetrofitService
-import com.example.sportx.data.remote.SportXRemoteDataSource
+import com.example.sportx.data.remote.LeaguesRemoteDataSource
+import com.example.sportx.data.remote.factory.RemoteDataSourceFactory
 import com.example.sportx.data.repository.SPORTXRepoImpl
-import com.example.sportx.domain.useCase.SportXUseCaseImpl
+import com.example.sportx.presentation.factory.FixtureFactory
 import com.example.sportx.presentation.factory.LeaguesFactory
-import com.example.sportx.presentation.factory.SportXFactory
 import com.example.sportx.presentation.fixtures.FixtureScreen
 import com.example.sportx.presentation.fixtures.FixtureViewModel
 import com.example.sportx.presentation.home.HomeScreen
@@ -59,13 +59,16 @@ val tabRowItems = listOf(
 @Composable
 fun TabRowFunction() {
 
-    val useCase = SportXUseCaseImpl(SPORTXRepoImpl.getInstance(SportXRemoteDataSource.getInstance(RetrofitService.api)))
 
     val leaguesFactory  = LeaguesFactory()
-    val leaguesViewModel = leaguesFactory.createViewModel(useCase) as LeaguesViewModel
+    val leaguesViewModel = leaguesFactory.createViewModel(
+        SPORTXRepoImpl.getInstance(RemoteDataSourceFactory())
+    ) as LeaguesViewModel
 
-    val fixtureFactory : SportXFactory = LeaguesFactory()
-    val fixtureViewModel = leaguesFactory.createViewModel(useCase) as FixtureViewModel
+    val fixtureFactory = FixtureFactory()
+    val fixtureViewModel = fixtureFactory.createViewModel(
+        SPORTXRepoImpl.getInstance(RemoteDataSourceFactory())
+    ) as FixtureViewModel
 
     val navController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxSize()) {

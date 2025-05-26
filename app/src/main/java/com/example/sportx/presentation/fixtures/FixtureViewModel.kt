@@ -3,19 +3,17 @@ package com.example.sportx.presentation.fixtures
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sportx.data.dto.fixture.FixtureFootballAndBasketBallResponse
-import com.example.sportx.domain.useCase.SportXUseCase
+import com.example.sportx.domain.useCase.SportXRepo
 import com.example.sportx.utilities.UiStateResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FixtureViewModel(
-    private val sportXUseCase: SportXUseCase
+    private val sportXRepo: SportXRepo
 ) : ViewModel() {
 
-     private val _upComingMatches : MutableStateFlow<UiStateResult<FixtureFootballAndBasketBallResponse>>
+     private val _upComingMatches : MutableStateFlow<UiStateResult<Any>>
      = MutableStateFlow(UiStateResult.Loading)
 
     val upComingMatches = _upComingMatches.asStateFlow()
@@ -24,8 +22,8 @@ class FixtureViewModel(
         viewModelScope.launch {
             try {
                 val upComingMatchesResponse
-                = sportXUseCase.getFootBallAndBasketBallFixture(sport)
-                _upComingMatches.collect(_upComingMatches)
+                = sportXRepo.getLatestSportFixtureMatches(sport)
+                _upComingMatches.emit(UiStateResult.Success(upComingMatchesResponse))
             }catch (e : Exception){
                 Log.i("TAG", "getUpComingMatches in view model error is ${e.message} ")
             }

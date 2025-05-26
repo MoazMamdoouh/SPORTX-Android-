@@ -12,30 +12,37 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.sportx.R
-import com.example.sportx.data.dto.fixture.Result
 import com.example.sportx.utilities.UiStateResult
 
 
 @Composable
 fun FixtureScreen(fixtureViewModel : FixtureViewModel , sportType : String ){
    Row {
+       Text("Up Coming Matches" , fontSize = 32.sp , fontWeight = FontWeight.Bold)
        UpComingMatches(fixtureViewModel , sportType)
    }
 }
 @Composable
 fun UpComingMatches(fixtureViewModel: FixtureViewModel, sportType: String) {
-    val upComingMatches = fixtureViewModel.upComingMatches.collectAsStateWithLifecycle().value
+    val upComingMatches
+    = fixtureViewModel.upComingMatches.collectAsStateWithLifecycle().value
+
     fixtureViewModel.getUpComingMatches(sportType)
+
     when (upComingMatches){
         is UiStateResult.Failure -> {
             Log.i("TAG", "UpComingMatches: in screen fail  ")
@@ -45,7 +52,7 @@ fun UpComingMatches(fixtureViewModel: FixtureViewModel, sportType: String) {
         }
         is UiStateResult.Success -> {
             LazyColumn {
-                itemsIndexed(upComingMatches.response.result){ _,  match ->
+                itemsIndexed(upComingMatches.response){ _,  match ->
                     UpComingMatchesCard(match)
                 }
             }

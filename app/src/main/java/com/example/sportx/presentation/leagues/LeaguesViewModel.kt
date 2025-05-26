@@ -4,14 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sportx.domain.model.leagues.SportsResponseModel
-import com.example.sportx.domain.useCase.SportXUseCase
+import com.example.sportx.domain.useCase.SportXRepo
 import com.example.sportx.utilities.UiStateResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LeaguesViewModel(
-    private val sportXUseCase : SportXUseCase
+    private val sportXRepo : SportXRepo
 ) : ViewModel() {
 
     private val _leagues : MutableStateFlow<UiStateResult<List<SportsResponseModel>>>
@@ -21,7 +21,7 @@ class LeaguesViewModel(
     fun getSportLeagues(sport : String){
         viewModelScope.launch {
            try {
-               val response = sportXUseCase.getSportLeagues(sport)
+               val response = sportXRepo.getSportLeagues(sport)
                _leagues.emit(UiStateResult.Success(response))
            }catch (e : Exception){
                Log.i("TAG", "getSportLeagues in view model ${e.message} ")

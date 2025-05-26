@@ -1,6 +1,6 @@
 package com.example.sportx.domain.model.leagues
 
-import com.example.sportx.data.dto.leagues.SportsResponseDto
+import com.example.sportx.data.dto.leagues.LeaguesDto
 
 
 data class SportsResponseModel (
@@ -9,12 +9,3 @@ data class SportsResponseModel (
     val leagueLogo: String?
 )
 
-fun SportsResponseDto.mapToModelList(): List<SportsResponseModel> {
-    return result.map { dto ->
-        SportsResponseModel(
-            leagueName = dto.league_name,
-            leagueKey = dto.league_key,
-            leagueLogo = dto.league_logo
-        )
-    }
-}

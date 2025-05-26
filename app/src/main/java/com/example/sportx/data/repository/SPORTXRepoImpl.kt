@@ -1,10 +1,10 @@
 package com.example.sportx.data.repository
 
 import android.util.Log
-import com.example.sportx.data.dto.fixture.FixtureFootballAndBasketBallResponse
-import com.example.sportx.data.remote.SportXRemoteDataSource
+import com.example.sportx.data.remote.DateGenerator
+import com.example.sportx.data.remote.factory.RemoteDataSourceFactory
+import com.example.sportx.data.remote.mappers.mapToModelList
 import com.example.sportx.domain.model.leagues.SportsResponseModel
-import com.example.sportx.domain.model.leagues.mapToModelList
 import com.example.sportx.domain.useCase.SportXRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -13,11 +13,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class SPORTXRepoImpl private constructor(
-   private val sportXRemoteDataSource : SportXRemoteDataSource
+   private val remoteDataSourceFactory: RemoteDataSourceFactory ,
+
 ): SportXRepo {
+
     override suspend fun getSportLeagues(sport: String): List<SportsResponseModel> {
-            return try {
-               val response =  sportXRemoteDataSource.getSportLeagues(sport)
+        val league = remoteDataSourceFactory.createRemoteDataSource(sport)
+        return try {
+               val response =  league.getSportLeague(sport)
                    .map {
                            dto -> dto.mapToModelList()
                    }
@@ -31,12 +34,13 @@ class SPORTXRepoImpl private constructor(
             }
     }
 
-    override suspend fun getFootBallAndBasketBallFixture(
+    override suspend fun getLatestSportFixtureMatches(
         sport: String
-    ): Flow<FixtureFootballAndBasketBallResponse> {
+    ): Flow<Any> {
+        val fixtures = remoteDataSourceFactory.createRemoteDataSource(sport)
+        val fixturesResponse : Any
         return try {
-            val fixturesResponse
-            = sportXRemoteDataSource.getFootBallAndBasketBallFixture(sport , "2025-05-01" , "2025-05-28")
+            fixturesResponse =  fixtures.getSportFixture(sport , DateGenerator.fromInPast() , DateGenerator.toInPast())
             fixturesResponse
         }catch (e : Exception){
             Log.i("TAG", "getFootBallAndBasketBallFixture in repo error is ${e.message} ")
@@ -47,10 +51,10 @@ class SPORTXRepoImpl private constructor(
     companion object {
         private var INSTANCE: SPORTXRepoImpl? = null
         fun getInstance(
-            sportXRemoteDataSource : SportXRemoteDataSource
+            remoteDataSourceFactory: RemoteDataSourceFactory
         ): SPORTXRepoImpl {
             return INSTANCE ?: synchronized(this) {
-                val temp = SPORTXRepoImpl(sportXRemoteDataSource)
+                val temp = SPORTXRepoImpl(remoteDataSourceFactory)
                 INSTANCE = temp
                 temp
             }
