@@ -28,15 +28,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.sportx.data.football.FootballRemoteDataSource
 import com.example.sportx.data.remote.RetrofitService
-import com.example.sportx.data.remote.SportXRemoteDataSource
 import com.example.sportx.data.repository.SPORTXRepoImpl
-import com.example.sportx.domain.use_case.SportXUseCaseImpl
-import com.example.sportx.presentation.factory.SportXFactory
+import com.example.sportx.presentation.fixtures.FixtureFactory
+import com.example.sportx.presentation.fixtures.FixtureScreen
+import com.example.sportx.presentation.fixtures.FixtureViewModel
 import com.example.sportx.presentation.home.HomeScreen
 import com.example.sportx.presentation.leagues.LeaguesFactory
 import com.example.sportx.presentation.leagues.LeaguesScreen
 import com.example.sportx.presentation.leagues.LeaguesViewModel
+import com.example.sportx.presentation.routes.FixtureScreen
 import com.example.sportx.presentation.routes.HomeScreen
 import com.example.sportx.presentation.routes.LeaguesScreen
 
@@ -56,21 +58,18 @@ val tabRowItems = listOf(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TabRowFunction() {
-//    val leaguesFactory = LeaguesFactory(
-//        SportXUseCaseImpl(
-//            SPORTXRepoImpl.getInstance(
-//                SportXRemoteDataSource.getInstance(RetrofitService.api)
-//            )
-//        )
-//    )
-//    val leaguesViewModel: LeaguesViewModel = viewModel(factory = leaguesFactory)
-    val sportXFactory  = SportXFactory()
-    val leaguesViewModel = sportXFactory.viewModelCreationFactory("leagues" ,
-        SportXUseCaseImpl(
-            SPORTXRepoImpl.getInstance(
-                SportXRemoteDataSource.getInstance(RetrofitService.api)
-            )
-        )) as LeaguesViewModel
+    val footballLeagueFactory = LeaguesFactory(
+       SPORTXRepoImpl.getInstance(FootballRemoteDataSource.getInstance(RetrofitService.api))
+    )
+    val leaguesViewModel: LeaguesViewModel = viewModel(factory = footballLeagueFactory)
+
+    // football fixture
+
+    val footballFixtureFactory = FixtureFactory(
+        SPORTXRepoImpl.getInstance(FootballRemoteDataSource.getInstance(RetrofitService.api))
+    )
+    val fixtureViewModel: FixtureViewModel = viewModel(factory = footballFixtureFactory)
+
 
     val navController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -119,7 +118,11 @@ fun TabRowFunction() {
                             }
                             composable<LeaguesScreen> {
                                 val args = it.toRoute<LeaguesScreen>()
-                                LeaguesScreen(leaguesViewModel, args.sportType)
+                                LeaguesScreen(leaguesViewModel, args.sportType , navController)
+                            }
+                            composable<FixtureScreen> {
+                                val args = it.toRoute<FixtureScreen>()
+                                FixtureScreen(fixtureViewModel , args.leagueId)
                             }
                         }
                     }else {

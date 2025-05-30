@@ -6,6 +6,6 @@ package com.example.sportx.data.remote
 
 
 object ApiKey {
-    val API_KEY = "4105479efa3c2faad0a1db0e674cd92850d7d06a4ec5af85b8677887ffeeb56d"
+    val API_KEY = "94a86b51c86be566191f5e60b132c3f61c43162c8a57f84ceb2d54bb2d9ebc18"
 
 }

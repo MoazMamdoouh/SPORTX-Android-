@@ -10,3 +10,8 @@ data object HomeScreen
 data class LeaguesScreen (
         val sportType : String
         )
+
+@Serializable
+data class FixtureScreen (
+        val leagueId : Int
+)
