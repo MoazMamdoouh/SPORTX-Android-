@@ -1,7 +1,7 @@
 package com.example.sportx.data.remote
 
-import com.example.sportx.data.dto.fixture.FixtureDto
-import com.example.sportx.data.dto.fixture.FootballOrBasketBallFixtureResponseDto
+import com.example.sportx.data.dto.FootballOrBasketBallFixtureResponseDto
+import com.example.sportx.data.dto.TennisFixtureResponseDto
 import com.example.sportx.data.dto.leagues.LeaguesResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -17,12 +17,22 @@ interface Api {
 
 
     @GET("/{sport}")
-    suspend fun getSportFixture(
+    suspend fun getFootballAndBasketballFixture(
         @Path("sport") sport : String ,
         @Query("from") fromData : String ,
         @Query("to") toData : String,
-        @Query("league_id") leagueId : Int ,
+        @Query("leagueId") leagueId : Int ,
         @Query("met") met : String = "Fixtures" ,
         @Query("APIkey") apiKey: String = ApiKey.API_KEY
     ) : FootballOrBasketBallFixtureResponseDto
+
+    @GET("/{sport}")
+    suspend fun getTennisFixture(
+        @Path("sport") sport : String ,
+        @Query("from") fromData : String ,
+        @Query("to") toData : String,
+        @Query("leagueId") leagueId : Int ,
+        @Query("met") met : String = "Fixtures" ,
+        @Query("APIkey") apiKey: String = ApiKey.API_KEY
+    ) : TennisFixtureResponseDto
 }

@@ -28,6 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.sportx.data.basketball.BasketballRemoteDataSource
+import com.example.sportx.data.dto.tennis.TennisRemoteDataSource
 import com.example.sportx.data.football.FootballRemoteDataSource
 import com.example.sportx.data.remote.RetrofitService
 import com.example.sportx.data.repository.SPORTXRepoImpl
@@ -68,7 +70,20 @@ fun TabRowFunction() {
     val footballFixtureFactory = FixtureFactory(
         SPORTXRepoImpl.getInstance(FootballRemoteDataSource.getInstance(RetrofitService.api))
     )
-    val fixtureViewModel: FixtureViewModel = viewModel(factory = footballFixtureFactory)
+    val footballFixtureViewModel: FixtureViewModel = viewModel(factory = footballFixtureFactory)
+
+    //basketball
+    val basketballFixtureFactory = FixtureFactory(
+        SPORTXRepoImpl.getInstance(BasketballRemoteDataSource.getInstance(RetrofitService.api))
+    )
+    val basketballFixtureViewModel: FixtureViewModel = viewModel(factory = basketballFixtureFactory)
+
+    //tennis
+    val tennisFixtureFactory = FixtureFactory(
+        SPORTXRepoImpl.getInstance(TennisRemoteDataSource.getInstance(RetrofitService.api))
+    )
+    val tennisFixtureViewModel: FixtureViewModel = viewModel(factory = tennisFixtureFactory)
+    //cricket
 
 
     val navController = rememberNavController()
@@ -122,7 +137,8 @@ fun TabRowFunction() {
                             }
                             composable<FixtureScreen> {
                                 val args = it.toRoute<FixtureScreen>()
-                                FixtureScreen(fixtureViewModel , args.leagueId)
+                                FixtureScreen(footballFixtureViewModel , basketballFixtureViewModel
+                                    , tennisFixtureViewModel , args.leagueId , args.sportType)
                             }
                         }
                     }else {

@@ -1,4 +1,4 @@
-package com.example.sportx.data.dto.fixture
+package com.example.sportx.data.dto.fixture.footballAndBasketball
 
 data class Result(
     val away_team_key: Int,

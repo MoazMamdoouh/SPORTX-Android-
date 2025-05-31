@@ -1,6 +1,6 @@
-package com.example.sportx.data.dto.fixture
+package com.example.sportx.data.dto.fixture.footballAndBasketball
 
-data class Substitute(
+data class StartingLineup(
     val info_time: String,
     val player: String,
     val player_country: Any,

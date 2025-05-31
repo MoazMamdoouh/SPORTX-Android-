@@ -1,4 +1,4 @@
-package com.example.sportx.data.football
+package com.example.sportx.data.basketball
 
 import android.util.Log
 import com.example.sportx.data.dto.FixtureDto
@@ -9,9 +9,9 @@ import com.example.sportx.data.remote.SportXRemoteDataSourceX
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class FootballRemoteDataSource (
+class BasketballRemoteDataSource(
     private val api: Api = RetrofitService.api
-)  : SportXRemoteDataSourceX{
+) : SportXRemoteDataSourceX  {
     override suspend fun getLeagues(sport: String): Flow<LeaguesResponseDto> {
         return try {
             val response =  api.getAllFootballLeagues(sport)
@@ -22,7 +22,7 @@ class FootballRemoteDataSource (
         }
     }
 
-    override suspend fun getFixture(sport: String , leagueId :Int , from : String , to : String ): Flow<FixtureDto> {
+    override suspend fun getFixture(sport: String, leagueId: Int , from : String , to : String ): Flow<FixtureDto> {
         return try {
             val fixture = api.getFootballAndBasketballFixture(
                 sport,
@@ -36,13 +36,15 @@ class FootballRemoteDataSource (
             flowOf()
         }
     }
+
+
     companion object {
-        private var INSTANCE: FootballRemoteDataSource? = null
+        private var INSTANCE: BasketballRemoteDataSource? = null
         fun getInstance(
             api: Api
-        ): FootballRemoteDataSource {
+        ): BasketballRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                val temp = FootballRemoteDataSource(api)
+                val temp = BasketballRemoteDataSource(api)
                 INSTANCE = temp
                 temp
             }

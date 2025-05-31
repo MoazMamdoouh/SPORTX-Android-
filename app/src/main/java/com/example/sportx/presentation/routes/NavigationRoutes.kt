@@ -13,5 +13,6 @@ data class LeaguesScreen (
 
 @Serializable
 data class FixtureScreen (
+        val sportType : String ,
         val leagueId : Int
 )

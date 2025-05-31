@@ -1,4 +1,4 @@
-package com.example.sportx.data.dto.fixture
+package com.example.sportx.data.dto.fixture.footballAndBasketball
 
 data class AwayScorer(
     val `in`: String,

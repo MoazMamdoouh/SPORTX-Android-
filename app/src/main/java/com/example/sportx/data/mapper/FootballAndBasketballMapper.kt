@@ -1,7 +1,7 @@
 package com.example.sportx.data.mapper
 
 import android.util.Log
-import com.example.sportx.data.dto.fixture.FootballOrBasketBallFixtureResponseDto
+import com.example.sportx.data.dto.FootballOrBasketBallFixtureResponseDto
 import com.example.sportx.domain.model.fixture.FootballAndBasketballFixtureModel
 
 

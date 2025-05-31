@@ -58,7 +58,7 @@ fun SportsLeaguesList(
         is UiStateResult.Success -> {
             LazyColumn {
                 itemsIndexed(leagues.response){ _ , league ->
-                    LeagueCard(league , navController)
+                    LeagueCard(league , navController , sportType)
                 }
             }
         }
@@ -66,7 +66,8 @@ fun SportsLeaguesList(
 
 }
 @Composable
-fun LeagueCard(league: LeaguesResponseModel, navController: NavController) {
+fun LeagueCard(league: LeaguesResponseModel, navController: NavController, sportType: String) {
+    Log.i("id", "cricket id ${league.league_key} ")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,7 +77,7 @@ fun LeagueCard(league: LeaguesResponseModel, navController: NavController) {
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White) ,
         onClick = {
-            navController.navigate(FixtureScreen(league.league_key))
+            navController.navigate(FixtureScreen(sportType,league.league_key ))
         }
     ){
         Row {
@@ -92,7 +93,8 @@ fun LeagueCard(league: LeaguesResponseModel, navController: NavController) {
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = league.league_name , fontWeight = FontWeight.Bold , fontSize = 25.sp
-                , modifier = Modifier.padding(15.dp)
+                , modifier = Modifier
+                    .padding(15.dp)
                     .fillMaxSize()
             , textAlign = TextAlign.Center)
         }
