@@ -2,16 +2,18 @@ package com.example.sportx.presentation.leagues
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.sportx.domain.model.leagues.LeaguesResponseModel
 import com.example.sportx.domain.use_case.SPORTXRepo
 import com.example.sportx.utilities.UiStateResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LeaguesViewModel(
+@HiltViewModel
+class LeaguesViewModel @Inject constructor(
     private val sportXRepo : SPORTXRepo
 ) : ViewModel() {
 
@@ -32,9 +34,3 @@ class LeaguesViewModel(
     }
 }
 
-
-class LeaguesFactory(val  sportXRepo : SPORTXRepo ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return LeaguesViewModel(sportXRepo) as T
-    }
-}

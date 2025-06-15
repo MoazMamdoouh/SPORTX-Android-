@@ -8,9 +8,10 @@ import com.example.sportx.data.remote.RetrofitService
 import com.example.sportx.data.remote.SportXRemoteDataSourceX
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 
-class FootballRemoteDataSource (
-    private val api: Api = RetrofitService.api
+class FootballRemoteDataSource @Inject constructor (
+     val api: Api
 )  : SportXRemoteDataSourceX{
     override suspend fun getLeagues(sport: String): Flow<LeaguesResponseDto> {
         return try {
@@ -34,18 +35,6 @@ class FootballRemoteDataSource (
         }catch (e : Exception){
             Log.i("TAG", "getFixture for football error ${e.message} ")
             flowOf()
-        }
-    }
-    companion object {
-        private var INSTANCE: FootballRemoteDataSource? = null
-        fun getInstance(
-            api: Api
-        ): FootballRemoteDataSource {
-            return INSTANCE ?: synchronized(this) {
-                val temp = FootballRemoteDataSource(api)
-                INSTANCE = temp
-                temp
-            }
         }
     }
 }

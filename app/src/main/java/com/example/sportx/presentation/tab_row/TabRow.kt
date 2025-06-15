@@ -23,23 +23,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.sportx.data.basketball.BasketballRemoteDataSource
-import com.example.sportx.data.dto.tennis.TennisRemoteDataSource
-import com.example.sportx.data.football.FootballRemoteDataSource
-import com.example.sportx.data.remote.RetrofitService
-import com.example.sportx.data.repository.SPORTXRepoImpl
-import com.example.sportx.presentation.fixtures.FixtureFactory
 import com.example.sportx.presentation.fixtures.FixtureScreen
-import com.example.sportx.presentation.fixtures.FixtureViewModel
 import com.example.sportx.presentation.home.HomeScreen
-import com.example.sportx.presentation.leagues.LeaguesFactory
 import com.example.sportx.presentation.leagues.LeaguesScreen
-import com.example.sportx.presentation.leagues.LeaguesViewModel
 import com.example.sportx.presentation.routes.FixtureScreen
 import com.example.sportx.presentation.routes.HomeScreen
 import com.example.sportx.presentation.routes.LeaguesScreen
@@ -60,31 +50,6 @@ val tabRowItems = listOf(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TabRowFunction() {
-    val footballLeagueFactory = LeaguesFactory(
-       SPORTXRepoImpl.getInstance(FootballRemoteDataSource.getInstance(RetrofitService.api))
-    )
-    val leaguesViewModel: LeaguesViewModel = viewModel(factory = footballLeagueFactory)
-
-    // football fixture
-
-    val footballFixtureFactory = FixtureFactory(
-        SPORTXRepoImpl.getInstance(FootballRemoteDataSource.getInstance(RetrofitService.api))
-    )
-    val footballFixtureViewModel: FixtureViewModel = viewModel(factory = footballFixtureFactory)
-
-    //basketball
-    val basketballFixtureFactory = FixtureFactory(
-        SPORTXRepoImpl.getInstance(BasketballRemoteDataSource.getInstance(RetrofitService.api))
-    )
-    val basketballFixtureViewModel: FixtureViewModel = viewModel(factory = basketballFixtureFactory)
-
-    //tennis
-    val tennisFixtureFactory = FixtureFactory(
-        SPORTXRepoImpl.getInstance(TennisRemoteDataSource.getInstance(RetrofitService.api))
-    )
-    val tennisFixtureViewModel: FixtureViewModel = viewModel(factory = tennisFixtureFactory)
-    //cricket
-
 
     val navController = rememberNavController()
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -133,12 +98,11 @@ fun TabRowFunction() {
                             }
                             composable<LeaguesScreen> {
                                 val args = it.toRoute<LeaguesScreen>()
-                                LeaguesScreen(leaguesViewModel, args.sportType , navController)
+                                LeaguesScreen(args.sportType , navController)
                             }
                             composable<FixtureScreen> {
                                 val args = it.toRoute<FixtureScreen>()
-                                FixtureScreen(footballFixtureViewModel , basketballFixtureViewModel
-                                    , tennisFixtureViewModel , args.leagueId , args.sportType)
+                                FixtureScreen(args.leagueId , args.sportType)
                             }
                         }
                     }else {

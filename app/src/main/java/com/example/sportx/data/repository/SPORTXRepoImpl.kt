@@ -7,20 +7,23 @@ import com.example.sportx.data.dto.TennisFixtureResponseDto
 import com.example.sportx.data.mapper.mapFootballAndBasketballFixtureDtoToModel
 import com.example.sportx.data.mapper.mapSportsDtoToModel
 import com.example.sportx.data.mapper.mapTennisFixtureDtoToModel
+import com.example.sportx.data.remote.RemoteDataSourceFactory
 import com.example.sportx.data.remote.SportXRemoteDataSourceX
 import com.example.sportx.domain.model.fixture.FixtureModel
 import com.example.sportx.domain.model.leagues.LeaguesResponseModel
 import com.example.sportx.domain.use_case.SPORTXRepo
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class SPORTXRepoImpl private constructor(
-   private val sportXRemoteDataSource : SportXRemoteDataSourceX
+class SPORTXRepoImpl @Inject constructor(
+    private val remoteDataSourceFactory: RemoteDataSourceFactory
 ): SPORTXRepo {
 
     override suspend fun getSportLeagues(sport: String): List<LeaguesResponseModel> {
             return try {
-               val leagues =  sportXRemoteDataSource.getLeagues(sport).map {
+               val dataSource = remoteDataSourceFactory.createRemoteDataSourceInstance(sport)
+               val leagues =  dataSource.getLeagues(sport).map {
                            dto -> dto.mapSportsDtoToModel()
                    }.first()
                 leagues
@@ -32,7 +35,8 @@ class SPORTXRepoImpl private constructor(
 
     override suspend fun getSportFixture(sport: String, leagueId: Int): List<FixtureModel> {
         return try {
-            sportXRemoteDataSource.getFixture(sport, leagueId , DateUtil.getDate7DaysAgo() , DateUtil.getDateIn7Days()).first().let { fixtureDto ->
+            val dataSource = remoteDataSourceFactory.createRemoteDataSourceInstance(sport)
+            dataSource.getFixture(sport, leagueId , DateUtil.getDate7DaysAgo() , DateUtil.getDateIn7Days()).first().let { fixtureDto ->
                 when (fixtureDto) {
                     is FootballOrBasketBallFixtureResponseDto -> {
                         fixtureDto.mapFootballAndBasketballFixtureDtoToModel()
@@ -52,18 +56,4 @@ class SPORTXRepoImpl private constructor(
         }
     }
 
-
-
-    companion object {
-        private var INSTANCE: SPORTXRepoImpl? = null
-        fun getInstance(
-            sportXRemoteDataSource : SportXRemoteDataSourceX
-        ): SPORTXRepoImpl {
-            return INSTANCE ?: synchronized(this) {
-                val temp = SPORTXRepoImpl(sportXRemoteDataSource)
-                INSTANCE = temp
-                temp
-            }
-        }
-    }
 }
