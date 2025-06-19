@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -35,7 +36,9 @@ import com.example.sportx.utilities.UiStateResult
 
 @Composable
 
-fun LeaguesScreen(leaguesViewModel: LeaguesViewModel , sportType : String , navController : NavController) {
+fun LeaguesScreen( sportType : String , navController : NavController
+                   , leaguesViewModel: LeaguesViewModel = hiltViewModel()
+) {
     SportsLeaguesList(leaguesViewModel , sportType , navController)
 }
 

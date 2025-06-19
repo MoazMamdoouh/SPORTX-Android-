@@ -7,11 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.sportx.domain.model.fixture.FixtureModel
 import com.example.sportx.domain.use_case.SPORTXRepo
 import com.example.sportx.utilities.UiStateResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FixtureViewModel (
+@HiltViewModel
+class FixtureViewModel @Inject constructor (
     private val sportXRepo: SPORTXRepo
 ) : ViewModel(){
     private val _sportsFixture
@@ -30,11 +33,5 @@ class FixtureViewModel (
                 Log.i("TAG", "getFootballFixture in view model error in football ${e.message} ")
             }
         }
-    }
-}
-
-class FixtureFactory(val  sportXRepo : SPORTXRepo ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return FixtureViewModel(sportXRepo) as T
     }
 }

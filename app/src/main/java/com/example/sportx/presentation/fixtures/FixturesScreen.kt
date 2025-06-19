@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.sportx.R
 import com.example.sportx.domain.model.fixture.FootballAndBasketballFixtureModel
@@ -37,37 +38,43 @@ import com.example.sportx.utilities.UiStateResult
 
 
 @Composable
-fun FixtureScreen(footballFixtureViewModel: FixtureViewModel ,
-                  basketballFixtureViewModel: FixtureViewModel,
-                  tennisFixtureViewModel: FixtureViewModel,
-                  leagueId: Int, sport : String ) {
+fun FixtureScreen(
+    leagueId: Int, sport: String,
+    footballFixtureViewModel: FixtureViewModel = viewModel(),
+    basketballFixtureViewModel: FixtureViewModel = viewModel(),
+    tennisFixtureViewModel: FixtureViewModel = viewModel(),
+) {
 
     val fixture = footballFixtureViewModel.sportsFixture.collectAsStateWithLifecycle().value
 
 
     LaunchedEffect(Unit) {
-        when(sport){
+        when (sport) {
             "football" -> {
-                footballFixtureViewModel.getFootballFixture(leagueId , sport)
+                footballFixtureViewModel.getFootballFixture(leagueId, sport)
             }
+
             "basketball" -> {
-                basketballFixtureViewModel.getFootballFixture(leagueId , sport)
+                basketballFixtureViewModel.getFootballFixture(leagueId, sport)
             }
+
             "tennis" -> {
-                tennisFixtureViewModel.getFootballFixture(leagueId , sport)
+                tennisFixtureViewModel.getFootballFixture(leagueId, sport)
             }
         }
 
     }
-    when(sport){
-         "football" -> {
+    when (sport) {
+        "football" -> {
             fixture as UiStateResult<List<FootballAndBasketballFixtureModel>>
             FootballAndBasketballFixture(fixture)
         }
+
         "basketball" -> {
             fixture as UiStateResult<List<FootballAndBasketballFixtureModel>>
             FootballAndBasketballFixture(fixture)
         }
+
         "tennis" -> {
             fixture as UiStateResult<List<TennisFixtureResponseModel>>
             TennisFixture(fixture)
@@ -111,6 +118,7 @@ fun FootballAndBasketballFixture(fixture: UiStateResult<List<FootballAndBasketba
         }
     }
 }
+
 @Composable
 fun FinishedMatches(response: List<FootballAndBasketballFixtureModel>) {
     LazyColumn {
@@ -303,7 +311,6 @@ fun UpComingMatchesCard(matches: FootballAndBasketballFixtureModel) {
 }
 
 
-
 @Composable
 fun TennisFixture(fixture: UiStateResult<List<TennisFixtureResponseModel>>) {
     when (fixture) {
@@ -339,6 +346,7 @@ fun TennisFixture(fixture: UiStateResult<List<TennisFixtureResponseModel>>) {
         }
     }
 }
+
 @Composable
 fun TennisFinishedMatches(response: List<TennisFixtureResponseModel>) {
     LazyColumn {
@@ -428,7 +436,7 @@ fun TennisFinishedMatchesCard(match: TennisFixtureResponseModel) {
                         error = painterResource(id = R.drawable.broken_image)
                     )
                     Text(
-                       match.event_second_player,
+                        match.event_second_player,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
